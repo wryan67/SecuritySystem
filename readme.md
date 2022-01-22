@@ -17,9 +17,9 @@ Now if I wave my hand in front of the motion detector, the alarm is tripped.  Th
 
 ## Photos
 
-![photo1](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/014d91dbfe1941673540a70bb3e272a761816563d7.jpg)
+![photo1](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/0142ae436622752dbb6286ce74e409e4efab3f11c9.jpg)
 
-![photo2](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/01bd47415adceec766baa4893ea106bea062a279ce.jpg)
+![photo2](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/01f063e93a2838e34113a7dba107a2ded18657dd3e.jpg)
 
 ## Circuit Diagram
 
