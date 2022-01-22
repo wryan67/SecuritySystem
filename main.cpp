@@ -24,11 +24,10 @@ int mcp23x17_address  = 0x20;
 int mcp23x17_inta_pin = 0;    // wiringpi pin number
 int mcp23x17_intb_pin = 7;    // wiringpi pin number
 
-
-MCP23x17_GPIO zone1aPin = mcp23x17_getGPIO(mcp23x17_address, MCP23x17_PORTA, 0);
-MCP23x17_GPIO zone1bPin = mcp23x17_getGPIO(mcp23x17_address, MCP23x17_PORTB, 0);
-
-int zone1Pixel=0;
+int activeZones=1;
+MCP23x17_GPIO zonePins[16] ={
+     mcp23x17_getGPIO(mcp23x17_address, MCP23x17_PORTA, 0)
+};
 
 int Green=0;
 int Yellow=42;
@@ -55,23 +54,35 @@ unsigned long long currentTimeMillis() {
         (unsigned long long)(currentTime.tv_usec) / 1000;
 }
 
-int getColor(int v1, int v2) {
-    
-    return (v1 && v2)?Green:Red; 
+int getColor(int value) {
+    return (value)?Green:Red; 
 }
 
-void eventMethod(MCP23x17_GPIO gpio, int v1) {
+void eventMethod(MCP23x17_GPIO gpio, int value) {
 
     MCP23x17_PORT port=mcp23x17_getPort(gpio);
     MCP23x17_PIN  pin=mcp23x17_getPin(gpio);
 
-    printf("event pin<%c%d> value=%d\n", 97+port, pin, v1); 
+    // get zone
+    int zone=-1;
+    for (int i=0; i<activeZones; ++i) {
+        if (zonePins[i]==gpio) {
+            zone=0;
+            break;
+        }
+    }
 
-    int v2=mcp23x17_virtualRead(mcp23x17_getGPIO(mcp23x17_address,1-port,pin));
+ 
 
     // set LED to match event
-    neopixel_setPixel(0,neopixel_wheel(getColor(v1,v2)));  
-    neopixel_render();
+    if (zone<0) {
+        fprintf(stderr,"error determining zone\n");
+        fprintf(stderr,"event zone<%s> pin<%c%d> value=%d\n", "unknown", 97+port, pin, value); 
+    } else {
+        fprintf(stderr,"event zone<%d> pin<%c%d> value=%d\n", zone+1, 97+port, pin, value); 
+        neopixel_setPixel(zone,neopixel_wheel(getColor(value)));  
+        neopixel_render();
+    }
 }
 
 
@@ -84,7 +95,7 @@ int setup() {
         return 9;
     }
 
-    fprintf(stderr, "enable txs0108\n");
+    fprintf(stderr, "enable logic level converter\n");
     pinMode(txs0108_pin, OUTPUT);
     digitalWrite(txs0108_pin, 1);    
 
@@ -124,15 +135,16 @@ int main(int argc, char** argv) {
     fprintf(stderr, "system initialization complete\n");
     fprintf(stderr, "initialize input pin(s)\n");  
 
-    mcp23x17_setPinInputMode(zone1aPin, TRUE, &eventMethod);
-    mcp23x17_setPinInputMode(zone1bPin, TRUE, &eventMethod);
+    // read initial values and set LED to match accordingly;
+    for (int zone=0;zone<activeZones;++zone) {
+        mcp23x17_setPinInputMode(zonePins[zone], TRUE, &eventMethod);
 
-    // read initial value and set LED to match accordingly;
-    int v1 = mcp23x17_digitalRead(zone1aPin);   
-    int v2 = mcp23x17_digitalRead(zone1bPin);   
+        int value = mcp23x17_digitalRead(zonePins[0]);   
+
+        neopixel_setPixel(zone,neopixel_wheel(getColor(value)));  
+    }
 
 
-    neopixel_setPixel(0,neopixel_wheel(getColor(v1,v2)));  
     neopixel_render();
 
     while (true) {
