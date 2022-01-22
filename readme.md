@@ -12,7 +12,7 @@ Now if I wave my hand in front of the motion detector, the alarm is tripped.  Th
 
 ## Video
 
-[YouTube Video Link](https://youtu.be/nNICbq8Yqfo)
+[YouTube Video Link](https://youtu.be/W2xMPx8phms)
 
 
 ## Photos
