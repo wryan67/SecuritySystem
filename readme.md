@@ -21,4 +21,4 @@ Now if I wave my hand in front of the motion detector, the alarm is tripped.  Th
 
 ## Circuit Diagram
 
-![circuit diagram](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/circuit%20diagram.png)
+![circuit diagram](https://raw.githubusercontent.com/wryan67/SecuritySystem/main/readme/circuit%20diagram-LM339.png)
